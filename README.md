@@ -1,1 +1,1 @@
-# js_project1
+A JavaScript program that lets the user play Rock Paper Scissors in their browser. The user goes up against the computer, and the game lasts for 5 rounds.
