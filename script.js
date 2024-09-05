@@ -1,26 +1,5 @@
-document.querySelector("button").onclick = playGame;
-
-
-function getHumanChoice() {
-    const strings = ["rock", "paper", "scissors"];
-    let userInput = prompt("Enter the number for one of the choices below:\n1. Rock\n2. Paper\n3. Scissors");
-    
-
-    while (userInput !== null) {
-        const temp = parseInt(userInput);
-        
-        if (isNaN(temp) || temp > 3 || temp < 1) {
-            alert("Invalid entry. Please enter a number from 1 to 3.");
-            userInput = prompt("Enter the number for one of the choices below:\n1. Rock\n2. Paper\n3. Scissors");
-            
-        } else {
-            return strings[temp-1];
-        }
-        
-    }
-
-    if (userInput === null) throw "Stop script"
-}
+let btn = document.querySelector("#start")
+btn.addEventListener('click', playGame)
 
 
 function getComputerChoice() {
@@ -30,42 +9,47 @@ function getComputerChoice() {
 }
 
 
+
+function playRound(humanChoice, computerChoice) {
+    if ((humanChoice === 'rock' && computerChoice === 'paper') ||
+        (humanChoice === 'paper' && computerChoice === 'scissors') ||
+        (humanChoice === 'scissors' && computerChoice === 'rock')) {
+        
+        alert(`You lose!\n
+               You chose ${humanChoice}, and the computer chose ${computerChoice}.
+               Unfortunately, ${humanChoice} loses to ${computerChoice}.`);
+        computerScore++
+
+    } else if ((humanChoice === 'rock' && computerChoice === 'scissors') ||
+               (humanChoice === 'paper' && computerChoice === 'rock') ||
+               (humanChoice === 'scissors' && computerChoice === 'paper')) {
+        
+        alert(`You win!\n
+               You chose ${humanChoice}, and the computer chose ${computerChoice}.
+               ${humanChoice[0].toUpperCase()}${humanChoice.substring(1)} beats ${computerChoice}!`);
+        humanScore++
+
+    } else {
+
+        alert(`It's a tie! You both chose ${humanChoice}.`);
+    }
+}
+
+
+
 function playGame() {
+    setupGame();
     let humanScore = 0;
     let computerScore = 0;
 
-    function playRound(humanChoice, computerChoice) {
-        if ((humanChoice === 'rock' && computerChoice === 'paper') ||
-            (humanChoice === 'paper' && computerChoice === 'scissors') ||
-            (humanChoice === 'scissors' && computerChoice === 'rock')) {
-            
-            alert(`You lose!\n
-                   You chose ${humanChoice}, and the computer chose ${computerChoice}.
-                   Unfortunately, ${humanChoice} loses to ${computerChoice}.`);
-            computerScore++
-    
-        } else if ((humanChoice === 'rock' && computerChoice === 'scissors') ||
-                   (humanChoice === 'paper' && computerChoice === 'rock') ||
-                   (humanChoice === 'scissors' && computerChoice === 'paper')) {
-            
-            alert(`You win!\n
-                   You chose ${humanChoice}, and the computer chose ${computerChoice}.
-                   ${humanChoice[0].toUpperCase()}${humanChoice.substring(1)} beats ${computerChoice}!`);
-            humanScore++
-    
-        } else {
-    
-            alert(`It's a tie! You both chose ${humanChoice}.`);
-        }
-    }
-
     for (let i = 0; i < 5; i++) {
-        alert(`This is turn ${i+1} out of 5`)
+        turns.textContent = `Round ${i+1} of 5`;
 
-        const humanChoice = getHumanChoice();
+        const humanChoice = "";
         const computerChoice = getComputerChoice();
         playRound(humanChoice, computerChoice);
     }
+    
 
     if (humanScore > computerScore) {
         alert(`You won the game!\nYour score was ${humanScore}, and the computer's score was ${computerScore}.\n
@@ -76,5 +60,37 @@ You won by ${humanScore-computerScore} point(s).`)
         alert(`You lost the game!\nYour score was ${humanScore}, and the computer's score was ${computerScore}.\n
 You lost by ${computerScore-humanScore} point(s).`)
     }
+}
+
+
+function setupGame() {
+    document.body.removeChild("#start");
+
+    const turns = document.createElement("h2");
+    document.body.appendChild(turns);
+
+    const desc = document.createElement("p");
+    desc.textContent = "Pick one of the following:";
+    document.body.appendChild(desc);
+
+    const rock = document.createElement("button");
+    rock.setAttribute("id", "rock");
+
+    const paper = document.createElement("button");
+    paper.setAttribute("id", "paper");
+
+    const scissors = document.createElement("button");
+    scissors.setAttribute("id", "scissors")
+
+    const choices = [rock, paper, scissors]
+
+    for (const choice of choices) {
+        choice.classList.add("choices");
+        document.body.appendChild(choice)
+        choice.addEventListener("click", playRound(`'${choice.id}'`, getComputerChoice()))
+
+    }
+    
+
 }
 
